@@ -5,13 +5,13 @@
  */
 module.exports = {
   development: {
-    client: 'pg',
+    client: "pg",
     connection: {
-      host: 'localhost',
+      host: "localhost",
       port: 5432,
-      user: 'bintang',
-      password: 'bintang1895',
-      database: 'gold'
-    }
-  }
+      user: "postgres",
+      password: "root",
+      database: "laporan_masyarakat",
+    },
+  },
 };
