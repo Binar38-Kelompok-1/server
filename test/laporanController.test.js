@@ -121,3 +121,52 @@ describe("GET /riwayat", () => {
     expect(result.error.text).toBe("Unauthorized");
   });
 });
+
+describe("GET /riwayat/:idLap", () => {
+  beforeEach(async () => {
+    await utility.createAdminTest();
+    await utility.createUserTest();
+    await utility.createLaporan();
+    await utility.createBalasan();
+    await utility.createBalasan();
+  });
+  afterEach(async () => {
+    await utility.deleteBalasan();
+    await utility.deleteLaporan();
+    await utility.deleteUserTest();
+    await utility.deleteAdminTest();
+  });
+
+  it("berhasil get detail riwayat laporan", async () => {
+    const jwtToken = await utility.getUserToken();
+    const laporan = await utility.getLaporan();
+    const admin = await utility.getAdminTest();
+
+    const result = await supertest(app)
+      .get(`/user/riwayat/${laporan.id_laporan}`)
+      .set("Cookie", `authorization=${jwtToken}`);
+
+    expect(result.status).toBe(200);
+    expect(result.body.message).toBe("success");
+    expect(result.body.data).toHaveProperty("laporan");
+    expect(result.body.data).toHaveProperty("balasan");
+    expect(result.body.data).toHaveProperty("admin");
+    expect(result.body.data).toHaveProperty("nama");
+    expect(result.body.data.nama).toBe("usertest1234");
+    expect(result.body.data.laporan.isi_laporan).toBe("test laporan");
+    expect(result.body.data.laporan.status).toBe(true);
+  });
+
+  it("gagal get detail riwayat laporan jika token invalid", async () => {
+    const jwtToken = "invalidToken";
+    const laporan = await utility.getLaporan();
+
+    const result = await supertest(app)
+      .get(`/user/riwayat/${laporan.id_laporan}`)
+      .set("Cookie", `authorization=${jwtToken}`);
+
+    expect(result.status).toBe(401);
+    expect(result.error).toBeDefined();
+    expect(result.error.text).toBe("Unauthorized");
+  });
+});

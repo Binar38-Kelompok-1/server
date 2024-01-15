@@ -1,6 +1,7 @@
 const express = require("express");
 const route = express.Router();
 const UserController = require("../controllers/UserController");
+const userAuth = require("../controllers/userAuth");
 const newUserController = require("../controllers/newUserControler");
 const newLaporanController = require("../controllers/newLaporanController");
 
@@ -42,7 +43,7 @@ const upload = multer({ storage: storage });
 // route.get("/riwayat", UserController.riwayat);
 // route.get("/riwayat/:idLap", UserController.riwayatDetail);
 
-route.get("/logout", UserController.logout);
+// route.get("/logout", UserController.logout);
 
 // new USER route
 route.get("/", newUserController.getUser);
@@ -65,6 +66,7 @@ route.post(
   newLaporanController.createLaporan
 );
 route.get("/riwayat", auth.isUser, newLaporanController.riwayat);
-route.get("/riwayat/:idLap", newLaporanController.riwayatDetail);
+route.get("/riwayat/:idLap", auth.isUser, newLaporanController.riwayatDetail);
+route.get("/logout", auth.isUser, userAuth.logout);
 
 module.exports = route;

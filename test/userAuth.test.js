@@ -117,3 +117,34 @@ describe("POST /", () => {
     expect(result.body.error).toContain("is not allowed to be empty");
   });
 });
+
+describe("POST user/logout", () => {
+  beforeEach(async () => {
+    await utility.createUserTest();
+  });
+  afterEach(async () => {
+    await utility.deleteUserTest();
+  });
+
+  it("berhasil logout", async () => {
+    const jwtToken = await utility.getUserToken();
+    const result = await supertest(app)
+      .get("/user/logout")
+      .set("Cookie", `authorization=${jwtToken}`);
+
+    expect(result.status).toBe(200);
+    expect(result.body.message).toBe("success");
+    expect(result.body.token).toBeNull();
+  });
+
+  it("gagal logout jika token invalid", async () => {
+    const jwtToken = "invalidToken";
+    const result = await supertest(app)
+      .get("/user/logout")
+      .set("Cookie", `authorization=${jwtToken}`);
+
+    expect(result.status).toBe(401);
+    expect(result.error).toBeDefined();
+    expect(result.error.text).toBe("Unauthorized");
+  });
+});

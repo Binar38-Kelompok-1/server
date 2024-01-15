@@ -55,20 +55,21 @@ const getUserToken = async () => {
 const createAdminTest = async () => {
   const data = {
     username: "admin",
+    nama: "admintest",
     password: "admin",
     no_telp: "6285444333222",
     alamat: "jalan test no 1234",
   };
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(data.password, 10);
   const inputData = {
     username: data.username,
+    nama: data.nama,
     password: hashedPassword,
     no_telp: data.no_telp,
     alamat: data.alamat,
   };
-
-  const admin = await db("petugas").insert(inputData);
+  await db("petugas").insert(inputData);
 };
 
 const getAdminTest = async () => {
@@ -107,13 +108,13 @@ const createLaporan = async () => {
   const laporan = await db("laporan")
     .where({ id_masyarakat: user.id })
     .insert(dataLaporan);
-
   return laporan;
 };
 
 const getLaporan = async () => {
   const user = await getTestUser();
   const laporan = await db("laporan").where({ id_masyarakat: user.id }).first();
+  // console.log(laporan);
   return laporan;
 };
 
@@ -127,10 +128,12 @@ const createBalasan = async () => {
   const admin = await getAdminTest();
   const dataBalasan = {
     isi_balasan: "test balasan",
-    id_laporan: laporan.id,
+    id_laporan: laporan.id_laporan,
     id_petugas: admin.id,
   };
-
+  await db("laporan")
+    .where({ id_laporan: laporan.id_laporan })
+    .update({ status: true });
   const balasan = await db("balasan").insert(dataBalasan);
 
   return balasan;
@@ -143,8 +146,7 @@ const getBalasan = async () => {
 };
 
 const deleteBalasan = async () => {
-  const laporan = await getLaporan();
-  await db("balasan").where({ id_laporan: laporan.id }).del();
+  await db("balasan").where({ isi_balasan: "test balasan" }).del();
 };
 
 module.exports = {
@@ -159,8 +161,10 @@ module.exports = {
   getAdminToken,
 
   createLaporan,
+  getLaporan,
   deleteLaporan,
 
   createBalasan,
+  getBalasan,
   deleteBalasan,
 };

@@ -105,7 +105,7 @@ const riwayatDetail = async (req, res, next) => {
       id_laporan: parseInt(req.params.idLap),
     };
     const validData = validation(data, laporanSchema.riwayatDetail);
-    console.log(validData);
+    // console.log(validData, "<== validData");
     const findUser = await db("masyarakat").where({
       id: validData.id_masyarakat,
     });
@@ -141,7 +141,7 @@ const riwayatDetail = async (req, res, next) => {
       data: {
         laporan: findLaporan[0],
         balasan: findBalasan[0],
-        admin: findAdmin[0],
+        admin: findAdmin[0].nama,
         nama: findUser[0].nama,
       },
     });

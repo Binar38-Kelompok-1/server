@@ -120,4 +120,23 @@ const login = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login };
+const logout = async (req, res, next) => {
+  try {
+    console.log("masuk");
+    const token = null;
+    res
+      .status(200)
+      .cookie("authorization", token, {
+        httpOnly: true,
+        secure: true,
+      })
+      .json({
+        message: "success",
+        token,
+      });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { register, login, logout };
