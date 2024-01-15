@@ -6,6 +6,8 @@ const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
 
+const auth = require("../authentication/auth");
+
 cloudinary.config({
   cloud_name: "dr7nlkbkr",
   api_key: "661614743312731",
@@ -24,9 +26,9 @@ const upload = multer({ storage: storage });
 
 // route.get("/", UserController.homePage);
 
-route.get("/profil", UserController.profil);
-route.get("/profil/edit", UserController.profilEditGet);
-route.post("/profil/edit", UserController.profilEditPost);
+// route.get("/profil", UserController.profil);
+// route.get("/profil/edit", UserController.profilEditGet);
+// route.post("/profil/edit", UserController.profilEditPost);
 
 route.get("/profil/password", UserController.passwordGet);
 route.post("/profil/password", UserController.passwordPost);
@@ -42,6 +44,8 @@ route.get("/logout", UserController.logout);
 
 // new USER route
 route.get("/", newUserController.getUser);
-
+route.get("/profil", newUserController.getUser);
+route.get("/profil/edit", newUserController.getUser);
+route.post("/profil/edit", auth.isUser, newUserController.postUser);
 
 module.exports = route;

@@ -8,7 +8,7 @@ exports.up = function (knex) {
     table.string("nik").unique();
     table.string("nama");
     table.string("password");
-    table.string("no_telp");
+    table.string("no_telp").unique();
     table.string("alamat");
     table.timestamp("created_at").defaultTo(knex.fn.now());
     table.timestamp("updated_at").defaultTo(knex.fn.now());

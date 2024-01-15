@@ -31,4 +31,50 @@ const getUser = async (req, res, next) => {
   }
 };
 
-module.exports = { getUser };
+const postUser = async (req, res, next) => {
+  try {
+    const data = {
+      id: req.user.id,
+      nik: req.body.nik,
+      nama: req.body.nama,
+      no_telp: req.body.no_telp,
+      alamat: req.body.alamat,
+    };
+    const validData = validation(data, userSchema.postUser);
+    const findNik = await db("masyarakat").where({ nik: validData.nik });
+    const findNoTelp = await db("masyarakat").where({
+      no_telp: validData.no_telp,
+    });
+
+    if (!findNik.length > 0) {
+      throw new ResponseError(400, "nik already exist");
+    }
+
+    if (!findNoTelp.length > 0) {
+      throw new ResponseError(400, "no_telp already exist");
+    }
+
+    const inputData = {
+      id: validData.id,
+      nik: validData.nik,
+      nama: validData.nama,
+      no_telp: validData.no_telp,
+      alamat: validData.alamat,
+      updated_at: new Date(),
+    };
+
+    const result = await db("masyarakat")
+      .update(inputData)
+      .where({ id: validData.id })
+      .returning(["id", "nik", "nama", "no_telp", "alamat"]);
+
+    res.status(200).json({
+      message: "success",
+      data: result[0],
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { getUser, postUser };

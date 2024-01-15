@@ -42,6 +42,7 @@ const getUserToken = async () => {
   const token = JWT.sign(
     {
       id: user.id,
+      role: "user",
     },
     JWT_SECRET,
     {

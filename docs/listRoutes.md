@@ -9,7 +9,7 @@ List Routes
 
   use('/user') require userRouter
   get('/user')get data user dan render halaman homepage user
-  get('/user/profil') render halaman profil user
+  get('/user/profil')get data user dan render halaman profil user
   get('/user/profil/edit') render halaman profil user
   post('/user/profil/edit') post halaman profil user
 
