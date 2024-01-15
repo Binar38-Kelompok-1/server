@@ -5,8 +5,7 @@
 exports.up = function (knex) {
   return knex.schema.createTable("balasan", (table) => {
     table.increments("id_balasan").primary();
-    table.timestamp("tgl_balasan");
-    table.string("isi_balasan", 10000);
+    table.text("isi_balasan");
     table.integer("id_laporan").references("id_laporan").inTable("laporan");
     table
       .integer("id_petugas")

@@ -115,4 +115,50 @@ const postPassword = async (req, res, next) => {
   }
 };
 
-module.exports = { getUser, postUser, getPassword, postPassword };
+const postNewPassword = async (req, res, next) => {
+  try {
+    const data = {
+      id: req.user.id,
+      password: req.body.password,
+    };
+    const validData = validation(data, userSchema.postPassword);
+    const oldPassword = await db("masyarakat")
+      .where({ id: validData.id })
+      .select("password");
+
+    const passCheck = await bcrypt.compare(
+      validData.password,
+      oldPassword[0].password
+    );
+
+    if (passCheck) {
+      throw new ResponseError(400, "password tidak boleh sama");
+    }
+
+    const hashedPassword = await bcrypt.hash(validData.password, 10);
+
+    const inputData = {
+      id: validData.id,
+      password: hashedPassword,
+    };
+    const result = await db("masyarakat")
+      .update(inputData)
+      .where({ id: validData.id })
+      .returning(["id"]);
+
+    res.status(200).json({
+      message: "success",
+      data: result[0],
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  getUser,
+  postUser,
+  getPassword,
+  postPassword,
+  postNewPassword,
+};

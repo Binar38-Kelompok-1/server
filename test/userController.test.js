@@ -1,6 +1,7 @@
 const supertest = require("supertest");
 const app = require("../app");
 const utility = require("./utility");
+const bcrypt = require("bcrypt");
 
 describe("Get /user", () => {
   beforeEach(async () => {
@@ -226,5 +227,59 @@ describe("GET /user/profil/password", () => {
     expect(result.status).toBe(401);
     expect(result.error).toBeDefined();
     expect(result.error.text).toBe("Unauthorized");
+  });
+});
+
+describe("POST /user/profil/password/baru", () => {
+  beforeEach(async () => {
+    await utility.createUserTest();
+  });
+  afterEach(async () => {
+    await utility.deleteUserTest();
+  });
+
+  it("berhasil ganti password", async () => {
+    const jwtToken = await utility.getUserToken();
+    const result = await supertest(app)
+      .post("/user/profil/password/baru")
+      .set("Cookie", `authorization=${jwtToken}`)
+      .send({
+        password: "usertest1234baru",
+      });
+
+    expect(result.status).toBe(200);
+    expect(result.body.data).toHaveProperty("id");
+    expect(result.body.message).toBe("success");
+    const testuser = await utility.getTestUser();
+    expect(await bcrypt.compare("usertest1234baru", testuser.password)).toBe(
+      true
+    );
+  });
+
+  it("gagal ganti password jika token invalid", async () => {
+    const jwtToken = "invalidToken";
+    const result = await supertest(app)
+      .post("/user/profil/password/baru")
+      .set("Cookie", `authorization=${jwtToken}`)
+      .send({
+        password: "usertest1234baru",
+      });
+
+    expect(result.status).toBe(401);
+    expect(result.error).toBeDefined();
+    expect(result.error.text).toBe("Unauthorized");
+  });
+
+  it("gagal ganti password jika password sama", async () => {
+    const jwtToken = await utility.getUserToken();
+    const result = await supertest(app)
+      .post("/user/profil/password/baru")
+      .set("Cookie", `authorization=${jwtToken}`)
+      .send({
+        password: "usertest1234",
+      });
+
+    expect(result.status).toBe(400);
+    expect(result.error.text).toContain("password tidak boleh sama");
   });
 });

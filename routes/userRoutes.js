@@ -2,6 +2,8 @@ const express = require("express");
 const route = express.Router();
 const UserController = require("../controllers/UserController");
 const newUserController = require("../controllers/newUserControler");
+const newLaporanController = require("../controllers/newLaporanController");
+
 const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
@@ -32,13 +34,13 @@ const upload = multer({ storage: storage });
 
 // route.get("/profil/password", UserController.passwordGet);
 // route.post("/profil/password", UserController.passwordPost);
-route.post("/profil/password/baru", UserController.passwordPostNew);
+// route.post("/profil/password/baru", UserController.passwordPostNew);
 
-route.get("/lapor", UserController.laporGet);
-route.post("/lapor", upload.single("foto"), UserController.laporPost);
+// route.get("/lapor", UserController.laporGet);
+// route.post("/lapor", upload.single("foto"), UserController.laporPost);
 
-route.get("/riwayat", UserController.riwayat);
-route.get("/riwayat/:idLap", UserController.riwayatDetail);
+// route.get("/riwayat", UserController.riwayat);
+// route.get("/riwayat/:idLap", UserController.riwayatDetail);
 
 route.get("/logout", UserController.logout);
 
@@ -49,5 +51,20 @@ route.get("/profil/edit", newUserController.getUser);
 route.post("/profil/edit", auth.isUser, newUserController.postUser);
 route.get("/profil/password", auth.isUser, newUserController.getPassword);
 route.post("profil/password", auth.isUser, newUserController.postPassword);
+route.post(
+  "/profil/password/baru",
+  auth.isUser,
+  newUserController.postNewPassword
+);
+// new Lapor route
+route.get("/lapor", auth.isUser, newLaporanController.getLaporan);
+route.post(
+  "/lapor",
+  auth.isUser,
+  upload.single("foto"),
+  newLaporanController.createLaporan
+);
+route.get("/riwayat", auth.isUser, newLaporanController.riwayat);
+route.get("/riwayat/:idLap", newLaporanController.riwayatDetail);
 
 module.exports = route;

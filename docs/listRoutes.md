@@ -10,8 +10,8 @@ List Routes
   use('/user') require userRouter
   get('/user')get data user dan render halaman homepage user
   get('/user/profil')get data user dan render halaman profil user
-  get('/user/profil/edit') render halaman profil user
-  post('/user/profil/edit') post halaman profil user
+  get('/user/profil/edit')get data user dan render halaman edit profil user
+  post('/user/profil/edit') post data update profil user
 
   get('/user/password') render halaman password user
   post('/user/password') post data password lama user

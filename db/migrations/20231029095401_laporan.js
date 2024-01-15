@@ -5,8 +5,7 @@
 exports.up = function (knex) {
   return knex.schema.createTable("laporan", (table) => {
     table.increments("id_laporan").primary();
-    table.timestamp("tgl_laporan");
-    table.string("isi_laporan", 10000);
+    table.text("isi_laporan");
     table.boolean("status");
     table.string("foto");
     table
