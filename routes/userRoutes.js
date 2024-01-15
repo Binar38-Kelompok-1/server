@@ -30,8 +30,8 @@ const upload = multer({ storage: storage });
 // route.get("/profil/edit", UserController.profilEditGet);
 // route.post("/profil/edit", UserController.profilEditPost);
 
-route.get("/profil/password", UserController.passwordGet);
-route.post("/profil/password", UserController.passwordPost);
+// route.get("/profil/password", UserController.passwordGet);
+// route.post("/profil/password", UserController.passwordPost);
 route.post("/profil/password/baru", UserController.passwordPostNew);
 
 route.get("/lapor", UserController.laporGet);
@@ -47,5 +47,7 @@ route.get("/", newUserController.getUser);
 route.get("/profil", newUserController.getUser);
 route.get("/profil/edit", newUserController.getUser);
 route.post("/profil/edit", auth.isUser, newUserController.postUser);
+route.get("/profil/password", auth.isUser, newUserController.getPassword);
+route.post("profil/password", auth.isUser, newUserController.postPassword);
 
 module.exports = route;

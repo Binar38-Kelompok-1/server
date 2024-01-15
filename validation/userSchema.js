@@ -25,4 +25,9 @@ const postUser = joi.object({
   alamat: joi.string().max(100).required(),
 });
 
-module.exports = { login, register, getUser, postUser };
+const postPassword = joi.object({
+  id: joi.number().integer().max(9999999999999999).required(),
+  password: joi.string().max(100).required(),
+});
+
+module.exports = { login, register, getUser, postUser, postPassword };

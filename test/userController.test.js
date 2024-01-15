@@ -138,7 +138,6 @@ describe("POST /user/profil/edit", () => {
 
   it("berhasil post user", async () => {
     const jwtToken = await utility.getUserToken();
-    console.log(jwtToken);
     const result = await supertest(app)
       .post("/user/profil/edit")
       .set("Cookie", `authorization=${jwtToken}`)
@@ -185,6 +184,45 @@ describe("POST /user/profil/edit", () => {
       alamat: "jalan test no 1234 update",
     });
 
+    expect(result.status).toBe(401);
+    expect(result.error).toBeDefined();
+    expect(result.error.text).toBe("Unauthorized");
+  });
+});
+
+describe("GET /user/profil/password", () => {
+  beforeEach(async () => {
+    await utility.createUserTest();
+  });
+  afterEach(async () => {
+    await utility.deleteUserTest();
+  });
+
+  it("berhasil get user", async () => {
+    const jwtToken = await utility.getUserToken();
+    const result = await supertest(app)
+      .get("/user/profil/password")
+      .set("Cookie", `authorization=${jwtToken}`);
+    expect(result.status).toBe(200);
+    expect(result.body.message).toBe("success");
+    expect(result.body.data.nama).toBe("usertest1234");
+  });
+
+  it("gagal get user jika token invalid", async () => {
+    const jwtToken = "invalidToken";
+    const result = await supertest(app)
+      .get("/user/profil/password")
+      .set("Cookie", `authorization=${jwtToken}`);
+    expect(result.status).toBe(401);
+    expect(result.error).toBeDefined();
+    expect(result.error.text).toBe("Unauthorized");
+  });
+
+  it("gagal get user jika token tidak ada", async () => {
+    const jwtToken = await utility.getUserToken();
+    await utility.deleteUserTest();
+
+    const result = await supertest(app).get("/user/profil/password");
     expect(result.status).toBe(401);
     expect(result.error).toBeDefined();
     expect(result.error.text).toBe("Unauthorized");

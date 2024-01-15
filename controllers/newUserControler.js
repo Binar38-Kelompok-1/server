@@ -77,4 +77,42 @@ const postUser = async (req, res, next) => {
   }
 };
 
-module.exports = { getUser, postUser };
+const getPassword = async (req, res, next) => {
+  try {
+    const data = {
+      id: req.user.id,
+    };
+    const validData = validation(data, userSchema.getUser);
+    const findUser = await db("masyarakat")
+      .where({ id: validData.id })
+      .select("nama");
+
+    if (!findUser) {
+      throw new ResponseError(404, "user not found");
+    }
+    const result = {
+      nama: findUser[0].nama,
+    };
+    res.status(200).json({
+      message: "success",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const postPassword = async (req, res, next) => {
+  try {
+    const data = {
+      id: req.user.id,
+      password: req.body.password,
+    };
+    const validData = validation(data, userSchema.postPassword);
+    const findUser = await db("masyarakat").where({ id: validData.id });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { getUser, postUser, getPassword, postPassword };
