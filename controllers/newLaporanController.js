@@ -123,6 +123,15 @@ const riwayatDetail = async (req, res, next) => {
     }
 
     // seeder sementara
+    // await db("petugas").insert({
+    //   id: 1,
+    //   nama: "testtest",
+    //   username: "testtest",
+    //   password: "adtesttestmin",
+    //   no_telp: "081234567890",
+    //   alamat: "testtest",
+    // });
+
     // await db("balasan").insert({
     //   isi_balasan: "test isi balasan",
     //   id_laporan: validData.id_laporan,
@@ -132,9 +141,16 @@ const riwayatDetail = async (req, res, next) => {
     const findBalasan = await db("balasan").where({
       id_laporan: validData.id_laporan,
     });
+    // if (!findBalasan) {
+    //   throw new ResponseError(404, "balasan not found");
+    // }
+
     const findAdmin = await db("petugas").where({
       id: findBalasan[0].id_petugas,
     });
+    // if (!findBalasan) {
+    //   throw new ResponseError(404, "balasan not found");
+    // }
 
     res.status(200).json({
       message: "success",

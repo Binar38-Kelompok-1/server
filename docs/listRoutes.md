@@ -24,3 +24,12 @@ List Routes
   get('/user/riwayat/:idLap') render halaman detail riwayat dengan id_laporan user
 
   get('/user/logout') halaman logout user (menghapus session) dengan method get tapi bukan untuk render
+
+- Admin
+  get('/login-petugas') render halaman login admin
+  post('/login-petugas') post data login admin
+
+  get('/admin')get data admin dan render halaman dashboard admin
+  get('/admin/profil') get data admin dan render halaman profil admin
+  get('/admin/profil/edit') get data admin dan render halaman edit profil admin
+  post('/admin/profil/edit') post data update profil admin

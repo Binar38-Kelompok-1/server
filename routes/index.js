@@ -6,6 +6,7 @@ const Controller = require("../controllers/Controller");
 // new migration to api
 const homePage = require("../controllers/homepage");
 const userAuth = require("../controllers/userAuth");
+const adminAuth = require("../controllers/adminAuth");
 
 // use auth passport-jwt
 const auth = require("../authentication/auth");
@@ -18,9 +19,9 @@ const auth = require("../authentication/auth");
 // route.use("/user", Controller.isLoggedInUser, userRoute);
 
 // PETUGAS
-route.get("/login-petugas", Controller.isLoggedOut, Controller.loginPetugasGet);
-route.post("/login-petugas", Controller.loginPetugasPost);
-route.use("/admin", Controller.isLoggedInAdmin, adminRoute);
+// route.get("/login-petugas", Controller.isLoggedOut, Controller.loginPetugasGet);
+// route.post("/login-petugas", Controller.loginPetugasPost);
+// route.use("/admin", Controller.isLoggedInAdmin, adminRoute);
 
 // new homepage
 route.get("/", homePage.homePage);
@@ -30,8 +31,13 @@ route.get("/", homePage.homePage);
 route.post("/register", userAuth.register);
 // login
 route.post("/", userAuth.login);
-
 // userRoute
 route.use("/user", auth.authenticate, userRoute);
+
+// new PETUGAS auth
+route.get("/login-petugas", homePage.loginPage);
+route.post("/login-petugas", adminAuth.login);
+
+route.use("/admin", auth.authenticate, adminRoute);
 
 module.exports = route;

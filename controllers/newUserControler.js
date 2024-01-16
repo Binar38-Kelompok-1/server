@@ -110,6 +110,10 @@ const postPassword = async (req, res, next) => {
     };
     const validData = validation(data, userSchema.postPassword);
     const findUser = await db("masyarakat").where({ id: validData.id });
+    res.status(200).json({
+      message: "success",
+      data: findUser[0].nama,
+    });
   } catch (error) {
     next(error);
   }

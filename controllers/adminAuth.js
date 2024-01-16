@@ -2,7 +2,7 @@ const db = require("../db/db");
 const bcrypt = require("bcrypt");
 const ResponseError = require("../middleware/responseError");
 const validation = require("../validation/validation");
-const userSchema = require("../validation/userSchema");
+const adminSchema = require("../validation/adminSchema");
 const JWT = require("jsonwebtoken");
 
 const JWT_SECRET = "JWT_SUPER_SECRET_CODE";
@@ -12,28 +12,30 @@ const register = async (req, res, next) => {
   try {
     //  ambil data dari request body
     const data = {
-      nik: req.body.nik,
+      username: req.body.username,
       nama: req.body.nama,
       password: req.body.password,
       no_telp: req.body.no_telp,
       alamat: req.body.alamat,
     };
     // melakukan validasi data menggunakan joi userSchema register
-    const validData = validation(data, userSchema.register);
+    const validData = validation(data, adminSchema.register);
 
     //  validasi nik apakah sudah ada di database atau belum
-    const findNik = await db("masyarakat").where({ nik: validData.nik });
-    if (findNik.length > 0) {
+    const findUsername = await db("petugas").where({
+      username: validData.username,
+    });
+    if (findUsername.length > 0) {
       // jika error akan dilempar ke response error dengan
       // status code dan pesan errornya
-      throw new ResponseError(400, "NIK sudah terdaftar");
+      throw new ResponseError(400, "username sudah terdaftar");
     }
 
     // melakukan hashing password dengan bcrypt untuk keamanan data
     const hashedPassword = await bcrypt.hash(validData.password, 10);
     // membuat data input, dan mengganti password dengan password yang sudah di hash
     const inputData = {
-      nik: validData.nik,
+      username: validData.username,
       nama: validData.nama,
       password: hashedPassword,
       no_telp: validData.no_telp,
@@ -42,9 +44,9 @@ const register = async (req, res, next) => {
 
     // memasukan data input ke database dengan tabel masyarakat,
     //  dan mengembalikan id, nik, nama, no_telp, alamat
-    const result = await db("masyarakat")
+    const result = await db("petugas")
       .insert(inputData)
-      .returning(["id", "nik", "nama", "no_telp", "alamat"]);
+      .returning(["id", "username", "nama", "no_telp", "alamat"]);
 
     // memformat data yang dikembalikan agar number tetap number
 
@@ -62,31 +64,33 @@ const login = async (req, res, next) => {
   try {
     //  ambil data dari request body
     const data = {
-      nik: req.body.nik,
+      username: req.body.username,
       password: req.body.password,
     };
-    // melakukan validasi data menggunakan joi userSchema login
-    const validData = validation(data, userSchema.login);
-
-    //  validasi nik apakah sudah ada di database atau belum
-    const findNik = await db("masyarakat").where({ nik: validData.nik });
-    //  validasi nik apakah sudah ada di database atau belum
+    // melakukan validasi data menggunakan joi adminSchema login
+    const validData = validation(data, adminSchema.login);
+    //  validasi username apakah sudah ada di database atau belum
+    const findUser = await db("petugas").where({
+      username: validData.username,
+    });
+    //  validasi username apakah sudah ada di database atau belum
     //  jika tidak ada, maka akan dilempar ke error
-    if (!findNik.length > 0) {
+    if (!findUser.length > 0) {
       // jika error akan dilempar ke response error dengan
       // status code dan pesan errornya
-      throw new ResponseError(401, "NIK atau Password Salah");
+      throw new ResponseError(401, "username atau Password Salah");
     }
 
     //  validasi password dengan membandingkan password dari request body
     // dengan password yang sudah di hash di database
     const validPassword = await bcrypt.compare(
       validData.password,
-      findNik[0].password
+      findUser[0].password
     );
+
     // jika password tidak sesuai, maka akan dilempar ke error
     if (!validPassword) {
-      throw new ResponseError(401, "NIK atau Password Salah");
+      throw new ResponseError(401, "username atau Password Salah");
     }
 
     // jika password sesuai, maka akan membuat token
@@ -94,8 +98,8 @@ const login = async (req, res, next) => {
     // payload token adalah id, role="user", dan expired="1d" 1 hari
     const token = JWT.sign(
       {
-        id: findNik[0].id,
-        role: "user",
+        id: findUser[0].id,
+        role: "admin",
       },
       JWT_SECRET,
       {
@@ -120,22 +124,4 @@ const login = async (req, res, next) => {
   }
 };
 
-const logout = async (req, res, next) => {
-  try {
-    const token = null;
-    res
-      .status(200)
-      .cookie("authorization", token, {
-        httpOnly: true,
-        secure: true,
-      })
-      .json({
-        message: "success",
-        token,
-      });
-  } catch (error) {
-    next(error);
-  }
-};
-
-module.exports = { register, login, logout };
+module.exports = { login, register };

@@ -13,12 +13,24 @@ const options = {
 
 const extractToken = async (payload, done) => {
   try {
-    const user = await db("masyarakat").where({ id: payload.id }).first(["id"]);
-    user.role = payload.role;
-    if (!user) {
-      return done(null, false);
+    if (payload.role === "user") {
+      const user = await db("masyarakat")
+        .where({ id: payload.id })
+        .first(["id"]);
+      user.role = payload.role;
+      if (!user) {
+        return done(null, false);
+      }
+      return done(null, user);
     }
-    return done(null, user);
+    if (payload.role === "admin") {
+      const admin = await db("petugas").where({ id: payload.id }).first(["id"]);
+      admin.role = payload.role;
+      if (!admin) {
+        return done(null, false);
+      }
+      return done(null, admin);
+    }
   } catch (error) {
     return done(error, false);
   }
