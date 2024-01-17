@@ -148,7 +148,6 @@ const passwordPost = async (req, res, next) => {
       password: req.body.password,
     };
     const validData = validation(data, adminSchema.passwordPost);
-    console.log(validData);
     const findAdmin = await db("petugas").where({ id: validData.id });
     res.status(200).json({
       message: "success",
@@ -199,6 +198,105 @@ const passwordPostNew = async (req, res, next) => {
   }
 };
 
+const petugasList = async (req, res, next) => {
+  try {
+    const data = await db("petugas").select(["id", "username", "nama"]);
+    res.status(200).json({
+      message: "success",
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const petugasRegisGet = async (req, res, next) => {
+  try {
+    console.log("masuk");
+    const data = await db("petugas")
+      .select(["nama"])
+      .where({ id: req.user.id });
+    res.status(200).json({
+      message: "success",
+      data: data[0],
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const petugasRegisPost = async (req, res, next) => {
+  try {
+    const data = {
+      username: req.body.username,
+      password: req.body.password,
+      nama: req.body.nama,
+      no_telp: req.body.no_telp,
+      alamat: req.body.alamat,
+    };
+
+    const validData = validation(data, adminSchema.register);
+
+    const hashedPassword = await bcrypt.hash(validData.password, 10);
+
+    const inputData = {
+      id: validData.id,
+      username: validData.username,
+      password: hashedPassword,
+      nama: validData.nama,
+      no_telp: validData.no_telp,
+      alamat: validData.alamat,
+    };
+
+    const result = await db("petugas").insert(inputData).returning(["id"]);
+
+    res.status(200).json({
+      message: "success",
+      data: result[0],
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const petugasDetail = async (req, res, next) => {
+  try {
+    console.log(req.params.idPetugas);
+    const findAdmin = await db("petugas")
+      .where({ id: req.params.idPetugas })
+      .select(["id", "username", "nama", "no_telp", "alamat"]);
+    console.log(findAdmin);
+    if (!findAdmin) {
+      throw new ResponseError(404, "admin not found");
+    }
+
+    res.status(200).json({
+      message: "success",
+      data: findAdmin[0],
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const logout = async (req, res, next) => {
+  try {
+    const token = null;
+    res
+      .status(200)
+      .cookie("authorization", token, {
+        httpOnly: true,
+        secure: true,
+      })
+      .json({
+        message: "success",
+        token,
+      });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   homePage,
   profile,
@@ -207,4 +305,9 @@ module.exports = {
   passwordGet,
   passwordPost,
   passwordPostNew,
+  petugasList,
+  petugasRegisGet,
+  petugasRegisPost,
+  petugasDetail,
+  logout,
 };

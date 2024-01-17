@@ -166,4 +166,166 @@ const riwayatDetail = async (req, res, next) => {
   }
 };
 
-module.exports = { getLaporan, createLaporan, riwayat, riwayatDetail };
+const belumBalas = async (req, res, next) => {
+  try {
+    const data = await db("laporan")
+      .join("masyarakat", "laporan.id_masyarakat", "=", "masyarakat.id")
+      .where("laporan.status", "=", false);
+    const nama = await db("petugas").where({ id: req.user.id }).select("nama");
+
+    res.status(200).json({
+      message: "success",
+      data,
+      nama: nama[0].nama,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const belumBalasDetail = async (req, res, next) => {
+  try {
+    const data = await db("laporan")
+      .join("masyarakat", "laporan.id_masyarakat", "=", "masyarakat.id")
+      .where("laporan.status", "=", false)
+      .where("laporan.id_laporan", "=", req.params.idLap);
+
+    const dataUser = await db("masyarakat")
+      .where({ id: data[0].id_masyarakat })
+      .select("nik", "nama", "no_telp", "alamat");
+
+    res.status(200).json({
+      message: "success",
+      data,
+      dataUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const balas = async (req, res, next) => {
+  try {
+    console.log("masuk");
+    const data = {
+      id_petugas: req.user.id,
+      id_laporan: req.params.idLap,
+      isi_balasan: req.body.isi_balasan,
+    };
+    console.log(data);
+
+    const findLaporan = await db("laporan").where({
+      id_laporan: req.params.idLap,
+    });
+
+    if (!findLaporan) {
+      throw new ResponseError(404, "laporan not found");
+    }
+
+    const balasan = await db("balasan").insert(data).returning("*");
+
+    const laporan = await db("laporan")
+      .where({ id_laporan: req.params.idLap })
+      .update({ status: true })
+      .returning("*");
+
+    res.status(200).json({
+      message: "success",
+      balas: balasan,
+      data: laporan,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+const hapusLaporan = async (req, res, next) => {
+  try {
+    const data = {
+      id_laporan: req.params.idLap,
+    };
+    const findLaporan = await db("laporan").where(data);
+    if (!findLaporan) {
+      throw new ResponseError(404, "laporan not found");
+    }
+    await db("laporan").where(data).del();
+    res.status(200).json({
+      message: "success",
+      data: findLaporan,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const sudahBalas = async (req, res, next) => {
+  try {
+    const data = {
+      id: req.user.id,
+    };
+
+    const findAdmin = await db("petugas").where(data).select(["nama"]);
+
+    const findLaporan = await db("laporan").where({ status: true }).select("*");
+    if (!findLaporan) {
+      throw new ResponseError(404, "laporan not found");
+    }
+    console.log(findLaporan);
+
+    res.status(200).json({
+      message: "success",
+      nama: findAdmin,
+      data: findLaporan,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const sudahBalasDetail = async (req, res, next) => {
+  try {
+    const data = {
+      id: req.user.id,
+    };
+
+    const findAdmin = await db("petugas").where(data).select(["nama"]);
+    if (!findAdmin) {
+      throw new ResponseError(404, "user not found");
+    }
+    console.log(findAdmin);
+    const dataLap = await db("laporan").where({
+      id_laporan: req.params.idLap,
+    });
+    const dataUser = await db("masyarakat").where({
+      id: dataLap[0].id_masyarakat,
+    });
+    const dataBalas = await db("balasan").where({
+      id_laporan: req.params.idLap,
+    });
+    const dataAdmin = await db("petugas").where({
+      id: dataBalas[0].id_petugas,
+    });
+
+    res.status(200).json({
+      message: "success",
+      dataLap: dataLap[0],
+      dataUser: dataUser[0],
+      dataBalas: dataBalas[0],
+      dataAdmin: dataAdmin[0],
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  getLaporan,
+  createLaporan,
+  riwayat,
+  riwayatDetail,
+  belumBalas,
+  belumBalasDetail,
+  balas,
+  hapusLaporan,
+  sudahBalas,
+  sudahBalasDetail,
+};
