@@ -124,4 +124,22 @@ const login = async (req, res, next) => {
   }
 };
 
-module.exports = { login, register };
+const logout = async (req, res, next) => {
+  try {
+    const token = null;
+    res
+      .status(200)
+      .cookie("authorization", token, {
+        httpOnly: true,
+        secure: true,
+      })
+      .json({
+        message: "success",
+        token,
+      });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { login, register, logout };
