@@ -20,7 +20,7 @@ const register = async (req, res, next) => {
     };
     // melakukan validasi data menggunakan joi userSchema register
     const validData = validation(data, userSchema.register);
-
+    console.log(validData);
     //  validasi nik apakah sudah ada di database atau belum
     const findNik = await db("masyarakat").where({ nik: validData.nik });
     if (findNik.length > 0) {
@@ -65,9 +65,9 @@ const login = async (req, res, next) => {
       nik: req.body.nik,
       password: req.body.password,
     };
+
     // melakukan validasi data menggunakan joi userSchema login
     const validData = validation(data, userSchema.login);
-
     //  validasi nik apakah sudah ada di database atau belum
     const findNik = await db("masyarakat").where({ nik: validData.nik });
     //  validasi nik apakah sudah ada di database atau belum
@@ -77,7 +77,6 @@ const login = async (req, res, next) => {
       // status code dan pesan errornya
       throw new ResponseError(401, "NIK atau Password Salah");
     }
-
     //  validasi password dengan membandingkan password dari request body
     // dengan password yang sudah di hash di database
     const validPassword = await bcrypt.compare(

@@ -6,6 +6,7 @@ const userSchema = require("../validation/userSchema");
 
 const getUser = async (req, res, next) => {
   try {
+    console.log(req.cookies);
     const data = {
       id: req.user.id,
     };

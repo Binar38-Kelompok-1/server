@@ -2,6 +2,7 @@ const express = require("express");
 const route = express.Router();
 const AdminController = require("../controllers/AdminController");
 const auth = require("../authentication/auth");
+const AdminAuth = require("../controllers/adminAuth");
 const newAdminController = require("../controllers/newAdminController");
 const newBalasanController = require("../controllers/newBalasanController");
 const newLaporanController = require("../controllers/newLaporanController");
@@ -119,6 +120,6 @@ route.get(
   newBalasanController.riwayatDetail
 );
 
-route.get("/logout", auth.isAdmin, newAdminController.logout);
+route.get("/logout", auth.isAdmin, AdminAuth.logout);
 
 module.exports = route;

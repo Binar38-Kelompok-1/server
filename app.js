@@ -2,6 +2,7 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const app = express();
 const morgan = require("morgan");
+const cors = require("cors");
 
 const routes = require("./routes/");
 const ResponseError = require("./middleware/responseError");
@@ -30,7 +31,12 @@ app.use(
   })
 );
 // app.use(flash());
-
+app.use(
+  cors({
+    origin: "http://localhost:3001",
+    credentials: true,
+  })
+);
 app.use(cookieParser());
 app.use(passport.initialize());
 // app.use(morgan("dev"));
