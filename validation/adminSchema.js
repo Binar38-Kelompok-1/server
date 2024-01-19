@@ -21,7 +21,7 @@ const update = joi.object({
   id: joi.number().integer().max(9999999999999999).required(),
   username: joi.string().max(100).required(),
   nama: joi.string().max(100).required(),
-  no_telp: joi.string().max(100).required(),
+  no_telp: joi.string().max(100).optional(),
   alamat: joi.string().max(100).required(),
 });
 

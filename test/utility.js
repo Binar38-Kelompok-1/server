@@ -96,6 +96,21 @@ const getAdminToken = async () => {
   return token;
 };
 
+const getBintangToken = async () => {
+  const admin = await db("petugas").where({ username: "bintang" }).first();
+  const token = JWT.sign(
+    {
+      id: admin.id,
+      role: "admin",
+    },
+    JWT_SECRET,
+    {
+      expiresIn: JWT_EXPIRES_IN,
+    }
+  );
+  return token;
+};
+
 const createLaporan = async () => {
   const user = await getTestUser();
   const dataLaporan = {
@@ -167,4 +182,6 @@ module.exports = {
   createBalasan,
   getBalasan,
   deleteBalasan,
+
+  getBintangToken,
 };

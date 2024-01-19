@@ -51,7 +51,7 @@ route.get("/profil", newUserController.getUser);
 route.get("/profil/edit", newUserController.getUser);
 route.post("/profil/edit", auth.isUser, newUserController.postUser);
 route.get("/profil/password", auth.isUser, newUserController.getPassword);
-route.post("profil/password", auth.isUser, newUserController.postPassword);
+route.post("/profil/password", auth.isUser, newUserController.postPassword);
 route.post(
   "/profil/password/baru",
   auth.isUser,
