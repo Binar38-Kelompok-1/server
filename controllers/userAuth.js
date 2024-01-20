@@ -20,7 +20,6 @@ const register = async (req, res, next) => {
     };
     // melakukan validasi data menggunakan joi userSchema register
     const validData = validation(data, userSchema.register);
-    console.log(validData);
     //  validasi nik apakah sudah ada di database atau belum
     const findNik = await db("masyarakat").where({ nik: validData.nik });
     if (findNik.length > 0) {

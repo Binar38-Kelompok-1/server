@@ -17,3 +17,4 @@ describe("ALL 404 not found", () => {
     expect(result.body.error).toBeUndefined();
   });
 });
+

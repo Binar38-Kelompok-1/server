@@ -96,6 +96,21 @@ const getAdminToken = async () => {
   return token;
 };
 
+const getBintangToken = async () => {
+  const admin = await db("petugas").where({ username: "bintang" }).first();
+  const token = JWT.sign(
+    {
+      id: admin.id,
+      role: "admin",
+    },
+    JWT_SECRET,
+    {
+      expiresIn: JWT_EXPIRES_IN,
+    }
+  );
+  return token;
+};
+
 const createLaporan = async () => {
   const user = await getTestUser();
   const dataLaporan = {
@@ -141,7 +156,9 @@ const createBalasan = async () => {
 
 const getBalasan = async () => {
   const laporan = await getLaporan();
-  const balasan = await db("balasan").where({ id_laporan: laporan.id }).first();
+  const balasan = await db("balasan")
+    .where({ id_laporan: laporan.id_laporan })
+    .first();
   return balasan;
 };
 
@@ -167,4 +184,6 @@ module.exports = {
   createBalasan,
   getBalasan,
   deleteBalasan,
+
+  getBintangToken,
 };

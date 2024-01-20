@@ -220,13 +220,34 @@ describe("GET /user/profil/password", () => {
   });
 
   it("gagal get user jika token tidak ada", async () => {
-    const jwtToken = await utility.getUserToken();
     await utility.deleteUserTest();
 
     const result = await supertest(app).get("/user/profil/password");
     expect(result.status).toBe(401);
     expect(result.error).toBeDefined();
     expect(result.error.text).toBe("Unauthorized");
+  });
+});
+
+describe("POST /user/profil/password/", () => {
+  beforeEach(async () => {
+    await utility.createUserTest();
+  });
+  afterEach(async () => {
+    await utility.deleteUserTest();
+  });
+
+  it("berhasil ganti password", async () => {
+    const jwtToken = await utility.getUserToken();
+    const result = await supertest(app)
+      .post("/user/profil/password/")
+      .set("Cookie", `authorization=${jwtToken}`)
+      .send({
+        password: "usertest1234",
+      });
+
+    expect(result.status).toBe(200);
+    expect(result.body.data).toBe("usertest1234");
   });
 });
 

@@ -1,6 +1,5 @@
 const express = require("express");
 const route = express.Router();
-const AdminController = require("../controllers/AdminController");
 const auth = require("../authentication/auth");
 const AdminAuth = require("../controllers/adminAuth");
 const newAdminController = require("../controllers/newAdminController");
@@ -50,6 +49,7 @@ route.get("/", auth.isAdmin, newAdminController.homePage);
 route.get("/profil", auth.isAdmin, newAdminController.profile);
 route.get("/profil/edit", auth.isAdmin, newAdminController.editProfileGet);
 route.post("/profil/edit", auth.isAdmin, newAdminController.editProfilePost);
+
 route.get("/profil/password", auth.isAdmin, newAdminController.passwordGet);
 route.post("/profil/password", auth.isAdmin, newAdminController.passwordPost);
 route.post(
@@ -57,6 +57,7 @@ route.post(
   auth.isAdmin,
   newAdminController.passwordPostNew
 );
+
 //  new BALASAN route
 route.get("/dasbor", auth.isAdmin, newBalasanController.dashboard);
 route.get("/masyarakat", auth.isAdmin, newBalasanController.masyarakatList);

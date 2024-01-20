@@ -2,7 +2,6 @@ const express = require("express");
 const route = express.Router();
 const adminRoute = require("./adminRoutes");
 const userRoute = require("./userRoutes");
-const Controller = require("../controllers/Controller");
 // new migration to api
 const homePage = require("../controllers/homepage");
 const userAuth = require("../controllers/userAuth");

@@ -2,6 +2,8 @@ const db = require("../db/db");
 const ResponseError = require("../middleware/responseError");
 const validation = require("../validation/validation");
 const laporanSchema = require("../validation/laporanSchema");
+const adminSchema = require("../validation/adminSchema");
+const balasanSchema = require("../validation/balasanSchema");
 
 const getLaporan = async (req, res, next) => {
   try {
@@ -168,15 +170,26 @@ const riwayatDetail = async (req, res, next) => {
 
 const belumBalas = async (req, res, next) => {
   try {
-    const data = await db("laporan")
+    const data = {
+      id: req.user.id,
+    };
+
+    const validData = validation(data, adminSchema.getAdmin);
+
+    const laporan = await db("laporan")
       .join("masyarakat", "laporan.id_masyarakat", "=", "masyarakat.id")
       .where("laporan.status", "=", false);
-    const nama = await db("petugas").where({ id: req.user.id }).select("nama");
+    const findAdmin = await db("petugas")
+      .where({ id: validData.id })
+      .select(["id", "username", "nama", "no_telp", "alamat"]);
 
+    if (!findAdmin.length > 0) {
+      throw new ResponseError(404, "admin not found");
+    }
     res.status(200).json({
       message: "success",
-      data,
-      nama: nama[0].nama,
+      laporan,
+      data: findAdmin[0],
     });
   } catch (error) {
     next(error);
@@ -185,19 +198,40 @@ const belumBalas = async (req, res, next) => {
 
 const belumBalasDetail = async (req, res, next) => {
   try {
-    const data = await db("laporan")
+    const data = {
+      id: req.user.id,
+    };
+
+    const validData = validation(data, adminSchema.getAdmin);
+
+    const laporan = await db("laporan")
       .join("masyarakat", "laporan.id_masyarakat", "=", "masyarakat.id")
       .where("laporan.status", "=", false)
       .where("laporan.id_laporan", "=", req.params.idLap);
 
-    const dataUser = await db("masyarakat")
-      .where({ id: data[0].id_masyarakat })
+    const findUser = await db("masyarakat")
+      .where({ id: laporan[0].id_masyarakat })
       .select("nik", "nama", "no_telp", "alamat");
+
+    if (!findUser.length > 0) {
+      throw new ResponseError(404, "user not found");
+    }
+
+    const findAdmin = await db("petugas")
+      .where({ id: validData.id })
+      .select(["id", "username", "nama", "no_telp", "alamat"]);
+
+    if (!findAdmin.length > 0) {
+      throw new ResponseError(404, "admin not found");
+    }
 
     res.status(200).json({
       message: "success",
-      data,
-      dataUser,
+      laporan,
+      data: {
+        user: findUser[0],
+        admin: findAdmin[0],
+      },
     });
   } catch (error) {
     next(error);
@@ -206,18 +240,16 @@ const belumBalasDetail = async (req, res, next) => {
 
 const balas = async (req, res, next) => {
   try {
-    console.log("masuk");
     const data = {
       id_petugas: req.user.id,
       id_laporan: req.params.idLap,
       isi_balasan: req.body.isi_balasan,
     };
-    console.log(data);
+    const validData = validation(data, balasanSchema.createBalasan);
 
     const findLaporan = await db("laporan").where({
-      id_laporan: req.params.idLap,
+      id_laporan: validData.id_laporan,
     });
-
     if (!findLaporan) {
       throw new ResponseError(404, "laporan not found");
     }
@@ -225,14 +257,14 @@ const balas = async (req, res, next) => {
     const balasan = await db("balasan").insert(data).returning("*");
 
     const laporan = await db("laporan")
-      .where({ id_laporan: req.params.idLap })
+      .where({ id_laporan: validData.id_laporan })
       .update({ status: true })
       .returning("*");
 
     res.status(200).json({
       message: "success",
       balas: balasan,
-      data: laporan,
+      laporan: laporan,
     });
   } catch (error) {
     next(error);
@@ -244,7 +276,7 @@ const hapusLaporan = async (req, res, next) => {
       id_laporan: req.params.idLap,
     };
     const findLaporan = await db("laporan").where(data);
-    if (!findLaporan) {
+    if (!findLaporan.length > 0) {
       throw new ResponseError(404, "laporan not found");
     }
     await db("laporan").where(data).del();
@@ -263,17 +295,25 @@ const sudahBalas = async (req, res, next) => {
       id: req.user.id,
     };
 
-    const findAdmin = await db("petugas").where(data).select(["nama"]);
+    const validData = validation(data, adminSchema.getAdmin);
+
+    const findAdmin = await db("petugas")
+      .where({ id: validData.id })
+      .select(["id", "username", "nama", "no_telp", "alamat"]);
+
+    if (!findAdmin.length > 0) {
+      throw new ResponseError(404, "admin not found");
+    }
 
     const findLaporan = await db("laporan").where({ status: true }).select("*");
-    if (!findLaporan) {
+
+    if (!findLaporan.length > 0) {
       throw new ResponseError(404, "laporan not found");
     }
-    console.log(findLaporan);
 
     res.status(200).json({
       message: "success",
-      nama: findAdmin,
+      nama: findAdmin[0],
       data: findLaporan,
     });
   } catch (error) {
@@ -286,30 +326,37 @@ const sudahBalasDetail = async (req, res, next) => {
     const data = {
       id: req.user.id,
     };
+    const validData = validation(data, adminSchema.getAdmin);
 
-    const findAdmin = await db("petugas").where(data).select(["nama"]);
-    if (!findAdmin) {
-      throw new ResponseError(404, "user not found");
+    const findAdmin = await db("petugas")
+      .where({ id: validData.id })
+      .select(["id", "username", "nama", "no_telp", "alamat"]);
+
+    if (!findAdmin.length > 0) {
+      throw new ResponseError(404, "admin not found");
     }
-    console.log(findAdmin);
-    const dataLap = await db("laporan").where({
+
+    const laporan = await db("laporan").where({
       id_laporan: req.params.idLap,
     });
-    const dataUser = await db("masyarakat").where({
-      id: dataLap[0].id_masyarakat,
+
+    const findUser = await db("masyarakat").where({
+      id: laporan[0].id_masyarakat,
     });
-    const dataBalas = await db("balasan").where({
+
+    const balasan = await db("balasan").where({
       id_laporan: req.params.idLap,
     });
+
     const dataAdmin = await db("petugas").where({
-      id: dataBalas[0].id_petugas,
+      id: balasan[0].id_petugas,
     });
 
     res.status(200).json({
       message: "success",
-      dataLap: dataLap[0],
-      dataUser: dataUser[0],
-      dataBalas: dataBalas[0],
+      dataLap: laporan[0],
+      dataUser: findUser[0],
+      dataBalas: balasan[0],
       dataAdmin: dataAdmin[0],
     });
   } catch (error) {
