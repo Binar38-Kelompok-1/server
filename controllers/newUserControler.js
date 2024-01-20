@@ -110,7 +110,21 @@ const postPassword = async (req, res, next) => {
       password: req.body.password,
     };
     const validData = validation(data, userSchema.postPassword);
-    const findUser = await db("masyarakat").where({ id: validData.id });
+
+    const findUser = await db("masyarakat").where({
+      id: validData.id,
+    });
+
+    const isPasswordCorrect = await bcrypt.compare(
+      validData.password,
+      findUser[0].password
+    );
+
+    if (!isPasswordCorrect) {
+      return res.status(401).json({
+        message: "Password salah",
+      });
+    }
     res.status(200).json({
       message: "success",
       data: findUser[0].nama,
