@@ -156,7 +156,9 @@ const createBalasan = async () => {
 
 const getBalasan = async () => {
   const laporan = await getLaporan();
-  const balasan = await db("balasan").where({ id_laporan: laporan.id }).first();
+  const balasan = await db("balasan")
+    .where({ id_laporan: laporan.id_laporan })
+    .first();
   return balasan;
 };
 

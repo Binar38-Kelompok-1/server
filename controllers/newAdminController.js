@@ -214,10 +214,20 @@ const passwordPostNew = async (req, res, next) => {
 
 const petugasList = async (req, res, next) => {
   try {
-    const data = await db("petugas").select(["id", "username", "nama"]);
+    const findAdmin = await db("petugas").select([
+      "id",
+      "username",
+      "nama",
+      "no_telp",
+      "alamat",
+    ]);
+
+    if (!findAdmin.length > 0) {
+      throw new ResponseError(404, "admin not found");
+    }
     res.status(200).json({
       message: "success",
-      data,
+      findAdmin,
     });
   } catch (error) {
     next(error);
@@ -226,13 +236,22 @@ const petugasList = async (req, res, next) => {
 
 const petugasRegisGet = async (req, res, next) => {
   try {
-    console.log("masuk");
-    const data = await db("petugas")
-      .select(["nama"])
-      .where({ id: req.user.id });
+    const data = {
+      id: req.user.id,
+    };
+
+    const validData = validation(data, adminSchema.getAdmin);
+
+    const findAdmin = await db("petugas")
+      .where({ id: validData.id })
+      .select(["id", "username", "nama", "no_telp", "alamat"]);
+
+    if (!findAdmin.length > 0) {
+      throw new ResponseError(404, "admin not found");
+    }
     res.status(200).json({
       message: "success",
-      data: data[0],
+      data: findAdmin[0],
     });
   } catch (error) {
     next(error);
@@ -285,11 +304,15 @@ const petugasRegisPost = async (req, res, next) => {
 
 const petugasDetail = async (req, res, next) => {
   try {
-    console.log(req.params.idPetugas);
+    const data = {
+      id: req.params.idPetugas,
+    };
+
+    const validData = validation(data, adminSchema.getAdmin);
+
     const findAdmin = await db("petugas")
-      .where({ id: req.params.idPetugas })
+      .where({ id: validData.id })
       .select(["id", "username", "nama", "no_telp", "alamat"]);
-    console.log(findAdmin);
     if (!findAdmin.length > 0) {
       throw new ResponseError(404, "admin not found");
     }

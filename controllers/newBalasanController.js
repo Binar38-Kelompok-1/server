@@ -3,6 +3,7 @@ const ResponseError = require("../middleware/responseError");
 const validation = require("../validation/validation");
 const balasanSchema = require("../validation/balasanSchema");
 const userSchema = require("../validation/userSchema");
+const adminSchema = require("../validation/adminSchema");
 
 const dashboard = async (req, res, next) => {
   try {
@@ -229,16 +230,28 @@ const masyarakatDelete = async (req, res, next) => {
 
 const riwayat = async (req, res, next) => {
   try {
-    const data = await db("balasan")
+    const data = {
+      id: req.user.id,
+    };
+    const validData = validation(data, adminSchema.getAdmin);
+
+    const balasan = await db("balasan")
       .join("laporan", "laporan.id_laporan", "=", "balasan.id_laporan")
       .join("masyarakat", "masyarakat.id", "=", "laporan.id_masyarakat")
-      .where({ id_petugas: req.user.id });
-    const nama = await db("petugas").where({ id: req.user.id }).select("nama");
+      .where({ id_petugas: validData.id });
+
+    const findAdmin = await db("petugas")
+      .where({ id: validData.id })
+      .select(["id", "username", "nama", "no_telp", "alamat"]);
+
+    if (!findAdmin.length > 0) {
+      throw new ResponseError(404, "admin not found");
+    }
 
     res.status(200).json({
       message: "success",
-      data,
-      nama: nama[0].nama,
+      balasan,
+      nama: findAdmin[0],
     });
   } catch (error) {
     next(error);
@@ -247,18 +260,27 @@ const riwayat = async (req, res, next) => {
 
 const riwayatDetail = async (req, res, next) => {
   try {
-    const data = await db("balasan")
+    const data = {
+      id: req.user.id,
+    };
+    const validData = validation(data, adminSchema.getAdmin);
+    const findAdmin = await db("petugas")
+      .where({ id: validData.id })
+      .select(["id", "username", "nama", "no_telp", "alamat"]);
+
+    if (!findAdmin.length > 0) {
+      throw new ResponseError(404, "admin not found");
+    }
+
+    const balasan = await db("balasan")
       .join("laporan", "laporan.id_laporan", "=", "balasan.id_laporan")
       .join("masyarakat", "masyarakat.id", "=", "laporan.id_masyarakat")
       .where({ id_balasan: req.params.idBalasan });
-    const dataAdmin = await db("petugas")
-      .where({ id: req.user.id })
-      .select("nama", "alamat", "no_telp");
 
     res.status(200).json({
       message: "success",
-      data,
-      dataAdmin,
+      balasan,
+      nama: findAdmin[0],
     });
   } catch (error) {
     next(error);
