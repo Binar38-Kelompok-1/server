@@ -152,7 +152,7 @@ describe("GET /riwayat/:idLap", () => {
     expect(result.body.data).toHaveProperty("balasan");
     expect(result.body.data).toHaveProperty("admin");
     expect(result.body.data).toHaveProperty("nama");
-    expect(result.body.data.nama).toBe("usertest1234");
+    expect(result.body.data.nama.nama).toBe("usertest1234");
     expect(result.body.data.laporan.isi_laporan).toBe("test laporan");
     expect(result.body.data.laporan.status).toBe(true);
   });
