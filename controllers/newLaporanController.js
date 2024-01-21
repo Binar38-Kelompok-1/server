@@ -147,9 +147,13 @@ const riwayatDetail = async (req, res, next) => {
     //   throw new ResponseError(404, "balasan not found");
     // }
 
-    const findAdmin = await db("petugas").where({
-      id: findBalasan[0].id_petugas,
-    });
+    let findAdmin = null;
+    if (findBalasan.length) {
+      findAdmin = await db("petugas").where({
+        id: findBalasan[0].id_petugas,
+      });
+    }
+
     // if (!findBalasan) {
     //   throw new ResponseError(404, "balasan not found");
     // }
@@ -159,8 +163,11 @@ const riwayatDetail = async (req, res, next) => {
       data: {
         laporan: findLaporan[0],
         balasan: findBalasan[0],
-        admin: findAdmin[0].nama,
+        admin: findAdmin?.[0]?.nama || null,
+        noTelpAdmin: findAdmin?.[0]?.no_telp,
+        alamatAdmin: findAdmin?.[0]?.alamat,
         nama: findUser[0].nama,
+        nikMasyarakat: findUser[0].nik,
       },
     });
   } catch (error) {
