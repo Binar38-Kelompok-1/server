@@ -1,35 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1706017458190" clover="3.2.0">
-  <project timestamp="1706017458191" name="All files">
-    <metrics statements="728" coveredstatements="638" conditionals="120" coveredconditionals="69" methods="65" coveredmethods="64" elements="913" coveredelements="771" complexity="0" loc="728" ncloc="728" packages="8" files="23" classes="23"/>
+<coverage generated="1706036356518" clover="3.2.0">
+  <project timestamp="1706036356518" name="All files">
+    <metrics statements="731" coveredstatements="641" conditionals="120" coveredconditionals="69" methods="65" coveredmethods="64" elements="916" coveredelements="774" complexity="0" loc="731" ncloc="731" packages="8" files="23" classes="23"/>
     <package name="server">
-      <metrics statements="24" coveredstatements="24" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <metrics statements="25" coveredstatements="25" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
       <file name="app.js" path="E:\2024\01\laporan masyarakat\server\app.js">
-        <metrics statements="24" coveredstatements="24" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <metrics statements="25" coveredstatements="25" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="1" count="6" type="stmt"/>
         <line num="2" count="6" type="stmt"/>
         <line num="3" count="6" type="stmt"/>
-        <line num="5" count="6" type="stmt"/>
+        <line num="4" count="6" type="stmt"/>
         <line num="6" count="6" type="stmt"/>
         <line num="7" count="6" type="stmt"/>
-        <line num="9" count="6" type="stmt"/>
+        <line num="8" count="6" type="stmt"/>
         <line num="10" count="6" type="stmt"/>
         <line num="11" count="6" type="stmt"/>
         <line num="12" count="6" type="stmt"/>
-        <line num="21" count="6" type="stmt"/>
+        <line num="13" count="6" type="stmt"/>
         <line num="22" count="6" type="stmt"/>
-        <line num="36" count="6" type="stmt"/>
-        <line num="42" count="6" type="stmt"/>
+        <line num="23" count="6" type="stmt"/>
+        <line num="37" count="6" type="stmt"/>
         <line num="43" count="6" type="stmt"/>
-        <line num="46" count="6" type="stmt"/>
-        <line num="55" count="6" type="stmt"/>
-        <line num="70" count="6" type="stmt"/>
+        <line num="44" count="6" type="stmt"/>
+        <line num="47" count="6" type="stmt"/>
+        <line num="56" count="6" type="stmt"/>
         <line num="71" count="6" type="stmt"/>
-        <line num="73" count="6" type="stmt"/>
-        <line num="74" count="1" type="stmt"/>
+        <line num="72" count="6" type="stmt"/>
+        <line num="74" count="6" type="stmt"/>
         <line num="75" count="1" type="stmt"/>
-        <line num="77" count="6" type="stmt"/>
-        <line num="79" count="6" type="stmt"/>
+        <line num="76" count="1" type="stmt"/>
+        <line num="78" count="6" type="stmt"/>
+        <line num="80" count="6" type="stmt"/>
       </file>
     </package>
     <package name="server.authentication">
@@ -582,7 +583,7 @@
       </file>
     </package>
     <package name="server.db">
-      <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       <file name="db.js" path="E:\2024\01\laporan masyarakat\server\db\db.js">
         <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="6" type="stmt"/>
@@ -591,8 +592,10 @@
         <line num="5" count="6" type="stmt"/>
       </file>
       <file name="knexfile.js" path="E:\2024\01\laporan masyarakat\server\db\knexfile.js">
-        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-        <line num="6" count="6" type="stmt"/>
+        <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="2" count="6" type="stmt"/>
+        <line num="7" count="6" type="stmt"/>
+        <line num="9" count="6" type="stmt"/>
       </file>
     </package>
     <package name="server.middleware">
