@@ -1,13 +1,15 @@
 // Update with your config settings.
-
+require("dotenv").config();
 /**
  * @type { Object.<string, import("knex").Knex.Config> }
  */
+
+const database = process.env.DATABASE_URL;
+
 module.exports = {
   production: {
-client: 'pg',
-    connection:
-      'postgres://postgres.awemoivicnjsvzulntom:laporan_masyarakat@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres',
-'use_env_variable': 'DATABASE_URL'
-  }
+    client: "pg",
+    connection: database,
+    use_env_variable: "DATABASE_URL",
+  },
 };

@@ -2,5 +2,5 @@ const app = require("./app");
 const port = 3000;
 
 app.listen(port, () => {
-  console.log(`I Love You ${port}`);
+  console.log(`listening in port ${port}`);
 });
