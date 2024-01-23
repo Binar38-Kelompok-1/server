@@ -5,13 +5,18 @@
  */
 module.exports = {
   development: {
-    client: 'pg',
+    client: "pg",
+    // connection: {
+    //   connectionString:
+    //     "postgres://lkfnvmfz:BX0r7silfQ2T5daOI_Yk0KFJEAQKjy5A@rosie.db.elephantsql.com/lkfnvmfz",
+    //   ssl: { rejectUnauthorized: false },
+    // },
     connection: {
-      host: 'localhost',
+      host: "localhost",
       port: 5432,
-      user: 'bintang',
-      password: 'bintang1895',
-      database: 'gold'
-    }
-  }
+      user: "postgres",
+      password: "root",
+      database: "laporan_masyarakat",
+    },
+  },
 };
