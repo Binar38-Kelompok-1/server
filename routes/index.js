@@ -202,7 +202,7 @@ route.get("/login-petugas", homePage.loginPage);
 
 route.post("/login-petugas", adminAuth.login);
 
-route.use("/testing", (req, res) => {
+route.get("/testing", (req, res) => {
   res.send("test action 1");
 });
 
