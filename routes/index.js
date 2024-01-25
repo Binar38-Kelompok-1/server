@@ -198,6 +198,10 @@ route.get("/login-petugas", homePage.loginPage);
 
 route.post("/login-petugas", adminAuth.login);
 
+route.use("/testing", (req, res) => {
+  res.send("test action");
+});
+
 route.use("/admin", auth.authenticate, adminRoute);
 
 module.exports = route;
