@@ -1,5 +1,5 @@
 const express = require("express");
-const cors = require("cors");
+// const cors = require("cors");
 
 const route = express.Router();
 const adminRoute = require("./adminRoutes");
@@ -9,7 +9,7 @@ const homePage = require("../controllers/homepage");
 const userAuth = require("../controllers/userAuth");
 const adminAuth = require("../controllers/adminAuth");
 
-app.use(cors());
+// app.use(cors());
 
 // use auth passport-jwt
 const auth = require("../authentication/auth");
@@ -202,7 +202,7 @@ route.get("/login-petugas", homePage.loginPage);
 
 route.post("/login-petugas", adminAuth.login);
 
-route.use("/testing", (req, res) => {
+route.get("/testing", (req, res) => {
   res.send("test action 1");
 });
 
