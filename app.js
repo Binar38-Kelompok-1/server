@@ -18,7 +18,7 @@ const passport = require("./authentication/passport");
 // const expressEjsLayouts = require("express-ejs-layouts");
 //
 // app.set("view engine", "ejs");
-app.use(cors());
+// app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -38,6 +38,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(passport.initialize());
 // app.use(morgan("dev"));
+
+const corsOptions = {
+  origin: "http://localhost:3000",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true,
+  optionsSuccessStatus: 204,
+};
+app.use(cors(corsOptions));
 
 app.use(routes);
 
