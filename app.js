@@ -40,7 +40,10 @@ app.use(passport.initialize());
 // app.use(morgan("dev"));
 
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: [
+    "http://localhost:3000",
+    "https://cosmic-sherbet-41231e.netlify.app",
+  ],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204,
@@ -48,11 +51,11 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
 
-app.use((req, res, next) => {
-  // console.log("Received cookies:", req.cookies);
-  console.log("Received headers:", req.headers);
-  next();
-});
+// app.use((req, res, next) => {
+// console.log("Received cookies:", req.cookies);
+//   console.log("Received headers:", req.headers);
+//   next();
+// });
 
 app.use(routes);
 
