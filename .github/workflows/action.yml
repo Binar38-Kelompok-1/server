@@ -25,6 +25,11 @@ jobs:
 
       - name: PM2 Restart
         run: |
-          cd /home/ubuntu/server  # Use the absolute path to "server"
+          cd /home/ubuntu/server  # Replace with the correct path to your "server" directory
+          npm install -g pm2
           pm2 reload ecosystem.config.js
           pm2 restart all
+
+      - name: List directory contents
+        run: |
+          ls /home/ubuntu
