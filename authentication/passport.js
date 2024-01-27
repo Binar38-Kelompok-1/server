@@ -6,7 +6,9 @@ const JWT_SECRET = "JWT_SUPER_SECRET_CODE";
 
 const options = {
   jwtFromRequest: (req) => {
-    return req.cookies.authorization;
+    // console.log(req.headers.authorization, "masuk <=====");
+
+    return req.headers.authorization;
   },
   secretOrKey: JWT_SECRET,
 };

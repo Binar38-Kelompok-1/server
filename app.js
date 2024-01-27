@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const app = express();
@@ -17,6 +18,7 @@ const passport = require("./authentication/passport");
 // const expressEjsLayouts = require("express-ejs-layouts");
 //
 // app.set("view engine", "ejs");
+// app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -33,15 +35,27 @@ app.use(express.urlencoded({ extended: false }));
 //   })
 // );
 // app.use(flash());
-app.use(
-  cors({
-    origin: "http://localhost:3001",
-    credentials: true,
-  })
-);
 app.use(cookieParser());
 app.use(passport.initialize());
 // app.use(morgan("dev"));
+
+const corsOptions = {
+  origin: [
+    "http://localhost:3000",
+    "https://cosmic-sherbet-41231e.netlify.app",
+  ],
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true,
+  optionsSuccessStatus: 204,
+};
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
+
+// app.use((req, res, next) => {
+//   console.log("request cookies ===>", req.cookies);
+//   console.log("request headers ===>", req.headers);
+//   next();
+// });
 
 app.use(routes);
 

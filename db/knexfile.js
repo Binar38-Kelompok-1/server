@@ -1,22 +1,15 @@
 // Update with your config settings.
-
+require("dotenv").config();
 /**
  * @type { Object.<string, import("knex").Knex.Config> }
  */
+
+const database = process.env.DATABASE_URL;
+
 module.exports = {
-  development: {
+  production: {
     client: "pg",
-    // connection: {
-    //   connectionString:
-    //     "postgres://lkfnvmfz:BX0r7silfQ2T5daOI_Yk0KFJEAQKjy5A@rosie.db.elephantsql.com/lkfnvmfz",
-    //   ssl: { rejectUnauthorized: false },
-    // },
-    connection: {
-      host: "localhost",
-      port: 5432,
-      user: "postgres",
-      password: "root",
-      database: "laporan_masyarakat",
-    },
+    connection: database,
+    use_env_variable: "DATABASE_URL",
   },
 };
