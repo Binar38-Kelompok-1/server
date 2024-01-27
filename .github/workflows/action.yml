@@ -23,4 +23,6 @@ jobs:
           REMOTE_USER: ${{ secrets.USERNAME }}
           TARGET: ${{ secrets.TARGET_DIR }}
 
-      
+      - name: PM2 Restart
+        run: |
+          pm2 restart all
