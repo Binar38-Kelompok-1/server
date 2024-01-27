@@ -25,6 +25,6 @@ jobs:
 
       - name: PM2 Restart
         run: |
-          cd server 
+          cd /home/ubuntu/server  # Use the absolute path to "server"
           pm2 reload ecosystem.config.js
           pm2 restart all
