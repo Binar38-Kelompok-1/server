@@ -23,14 +23,3 @@ jobs:
           REMOTE_USER: ${{ secrets.USERNAME }}
           TARGET: ${{ secrets.TARGET_DIR }}
 
-      - name: PM2 Restart
-        run: |
-          cd /home/ubuntu/server
-          npm install -g pm2
-          pm2 reload ecosystem.config.js
-          pm2 restart all
-
-
-      - name: List directory contents
-        run: |
-          ls /home/ubuntu
