@@ -162,8 +162,8 @@ const riwayatDetail = async (req, res, next) => {
         data: {
           laporan: findLaporan[0],
           balasan: findBalasan[0],
-          admin: findAdmin[0].nama,
-          nama: findUser[0],
+          admin: findAdmin[0],
+          nama: findUser[0].nama,
           nik: findUser[0].nik,
         },
       });
@@ -310,7 +310,10 @@ const sudahBalas = async (req, res, next) => {
       throw new ResponseError(404, "admin not found");
     }
 
-    const findLaporan = await db("laporan").where({ status: true }).select("*");
+    const findLaporan = await db("laporan")
+      .join("masyarakat", "laporan.id_masyarakat", "=", "masyarakat.id")
+      .where({ status: true })
+      .select("*");
 
     if (!findLaporan.length > 0) {
       throw new ResponseError(404, "laporan not found");
