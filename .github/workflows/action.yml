@@ -31,4 +31,4 @@ jobs:
       - name: PM2 Restart
         run: |
           cd server 
-          pm2 startOrRestart ecosystem.config.js
+          pm2 reload ecosystem.config.js
