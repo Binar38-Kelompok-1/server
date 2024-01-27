@@ -28,10 +28,7 @@ jobs:
         with:
           node-version: '14'
 
-      - name: Install dependencies
-        run: npm install
-
       - name: PM2 Restart
         run: |
-          npm install -g pm2
+          cd server 
           pm2 startOrRestart ecosystem.config.js
