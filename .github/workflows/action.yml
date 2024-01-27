@@ -1,4 +1,4 @@
-name: Push-to-EC2
+artname: Push-to-EC2
 
 # Trigger deployment only on push to main branch
 on:
@@ -26,9 +26,10 @@ jobs:
       - name: Setup Node.js and npm
         uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '20'
 
       - name: PM2 Restart
         run: |
           cd server 
           pm2 reload ecosystem.config.js
+          pm2 restart all
