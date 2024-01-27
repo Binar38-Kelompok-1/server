@@ -132,7 +132,15 @@ const masyarakatEditGet = async (req, res, next) => {
 
     const result = await db("masyarakat")
       .where({ id: req.params.idMasyarakat })
-      .select("id", "nik", "nama", "no_telp", "alamat");
+      .select(
+        "id",
+        "nik",
+        "nama",
+        "no_telp",
+        "alamat",
+        "created_at",
+        "updated_at"
+      );
 
     if (!result.length > 0) {
       throw new ResponseError(404, "user not found");
